@@ -22,15 +22,53 @@
       --home-background: none;
     }
 
-    :root[data-theme="ocean"] { --theme-bg: #06131b; --theme-surface: #091c26; --theme-panel: #102731; --theme-line: #29444f; }
-    :root[data-theme="forest"] { --theme-bg: #07140e; --theme-surface: #0c1b13; --theme-panel: #13251a; --theme-line: #304638; }
-    :root[data-theme="plum"] { --theme-bg: #140d16; --theme-surface: #1b1220; --theme-panel: #271a2d; --theme-line: #48364e; }
+    :root[data-theme="ocean"] {
+      --theme-bg: #06131b;
+      --theme-surface: #091c26;
+      --theme-panel: #102731;
+      --theme-line: #29444f;
+    }
 
-    * { box-sizing: border-box; }
-    body { margin: 0; min-width: 360px; min-height: 100vh; background: var(--theme-bg); text-shadow: 0 0 7px #fff5; }
-    button, input { font: inherit; }
-    button { color: inherit; }
-    .browser { min-height: 100vh; display: flex; flex-direction: column; }
+    :root[data-theme="forest"] {
+      --theme-bg: #07140e;
+      --theme-surface: #0c1b13;
+      --theme-panel: #13251a;
+      --theme-line: #304638;
+    }
+
+    :root[data-theme="plum"] {
+      --theme-bg: #140d16;
+      --theme-surface: #1b1220;
+      --theme-panel: #271a2d;
+      --theme-line: #48364e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-width: 360px;
+      min-height: 100vh;
+      background: var(--theme-bg);
+      text-shadow: 0 0 7px #fff5;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .browser {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
     .tab-strip {
       height: 48px;
       flex: 0 0 48px;
@@ -40,6 +78,7 @@
       padding: 7px 12px 0;
       background: var(--theme-bg);
     }
+
     .brand-mark {
       width: 25px;
       height: 25px;
@@ -48,7 +87,15 @@
       display: grid;
       place-items: center;
     }
-    .tab-list { min-width: 0; flex: 1; display: flex; align-items: end; gap: 5px; }
+
+    .tab-list {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      align-items: end;
+      gap: 5px;
+    }
+
     .tab {
       min-width: 90px;
       max-width: 235px;
@@ -65,9 +112,32 @@
       cursor: pointer;
       text-align: left;
     }
-    .tab.active { background: var(--theme-panel); color: #fff; text-shadow: 0 0 9px #fff8; }
-    .tab-title { min-width: 0; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 12px; }
-    .tab-favicon { width: 12px; height: 12px; flex: 0 0 12px; border: 1px solid #fff; border-radius: 50%; background: radial-gradient(circle, #fff 0 25%, #111 32%); box-shadow: 0 0 7px #fff8; }
+
+    .tab.active {
+      background: var(--theme-panel);
+      color: #fff;
+      text-shadow: 0 0 9px #fff8;
+    }
+
+    .tab-title {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-size: 12px;
+    }
+
+    .tab-favicon {
+      width: 12px;
+      height: 12px;
+      flex: 0 0 12px;
+      border: 1px solid #fff;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff 0 25%, #111 32%);
+      box-shadow: 0 0 7px #fff8;
+    }
+
     .tab-close, .icon-button {
       border: 0;
       background: transparent;
@@ -76,8 +146,19 @@
       cursor: pointer;
       color: #eee;
     }
-    .tab-close { width: 20px; height: 20px; border-radius: 50%; font-size: 15px; line-height: 1; }
-    .tab-close:hover, .icon-button:hover { background: #292929; }
+
+    .tab-close {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    .tab-close:hover, .icon-button:hover {
+      background: #292929;
+    }
+
     .new-tab {
       width: 30px;
       height: 30px;
@@ -91,6 +172,7 @@
       color: #fff;
       text-shadow: 0 0 9px #fff9;
     }
+
     .toolbar {
       min-height: 48px;
       display: flex;
@@ -99,12 +181,28 @@
       padding: 5px 13px;
       background: var(--theme-surface);
     }
-    .nav-actions { display: flex; align-items: center; gap: 3px; }
-    .icon-button { width: 34px; height: 34px; flex: 0 0 34px; border-radius: 50%; }
-    .icon-button:disabled { opacity: .38; cursor: default; }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .icon-button {
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
+      border-radius: 50%;
+    }
+
+    .icon-button:disabled {
+      opacity: .38;
+      cursor: default;
+    }
+
     .address-wrap {
       min-width: 80px;
-      height: 36px;
+      height: 32px;
       flex: 1;
       display: flex;
       align-items: center;
@@ -115,14 +213,43 @@
       background: var(--theme-panel);
       transition: border-color .16s, background .16s, box-shadow .16s;
     }
-    .address-wrap:focus-within { background: #101010; border-color: #fff; box-shadow: 0 0 0 2px #ffffff20, 0 0 13px #ffffff26; }
-    .address-wrap svg { flex: 0 0 16px; color: #fff; filter: drop-shadow(0 0 4px #fff8); }
-    #address { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: #fff; font-size: 13px; text-shadow: 0 0 7px #fff6; }
-    #address::placeholder { color: #aaa; }
-    .toolbar-actions { display: flex; align-items: center; gap: 4px; }
+
+    .address-wrap:focus-within {
+      background: #101010;
+      border-color: #fff;
+      box-shadow: 0 0 0 2px #ffffff20, 0 0 13px #ffffff26;
+    }
+
+    .address-wrap svg {
+      flex: 0 0 16px;
+      color: #fff;
+      filter: drop-shadow(0 0 4px #fff8);
+    }
+
+    #address {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #fff;
+      font-size: 13px;
+      text-shadow: 0 0 7px #fff6;
+    }
+
+    #address::placeholder {
+      color: #aaa;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
     .profile {
-      width: 28px;
-      height: 28px;
+      width: 24px;
+      height: 24px;
       display: grid;
       place-items: center;
       margin-left: 4px;
@@ -131,10 +258,11 @@
       background: #171717;
       border: 1px solid #555;
       color: #fff;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       text-shadow: 0 0 8px #fff;
     }
+
     .bookmarks {
       height: 38px;
       flex: 0 0 38px;
@@ -147,7 +275,11 @@
       overflow-x: auto;
       scrollbar-width: none;
     }
-    .bookmarks:empty { display: none; }
+
+    .bookmarks:empty {
+      display: none;
+    }
+
     .bookmark {
       height: 28px;
       display: flex;
@@ -161,36 +293,97 @@
       white-space: nowrap;
       cursor: pointer;
     }
-    .bookmark { color: #f5f5f5; text-shadow: 0 0 7px #fff5; }
-    .bookmark:hover { background: #202020; }
-    .bookmark-dot { width: 9px; height: 9px; border-radius: 50%; background: #fff; box-shadow: 0 0 8px #fff; }
-    main { min-height: 0; flex: 1; position: relative; background: var(--theme-bg); }
-    .home-page { position: relative; min-height: calc(100vh - 134px); overflow: auto; background-color: var(--theme-bg); background-image: linear-gradient(#0004, #0009), var(--home-background); background-position: center; background-size: cover; background-repeat: no-repeat; color: #fff; }
-    #particles { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-    .hero, .below-fold { position: relative; z-index: 1; }
+
+    .bookmark {
+      color: #f5f5f5;
+      text-shadow: 0 0 7px #fff5;
+    }
+
+    .bookmark:hover {
+      background: #202020;
+    }
+
+    .bookmark-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 8px #fff;
+    }
+
+    main {
+      min-height: 0;
+      flex: 1;
+      position: relative;
+      background: var(--theme-bg);
+    }
+
+    .home-page {
+      position: relative;
+      min-height: calc(100vh - 134px);
+      overflow: auto;
+      background-color: var(--theme-bg);
+      background-image: linear-gradient(#0004, #0009), var(--home-background);
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      color: #fff;
+    }
+
+    #particles {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .hero, .below-fold {
+      position: relative;
+      z-index: 1;
+    }
+
     .hero {
-      min-height: 340px;
-      height: min(45vh, 430px);
+      min-height: 0;
+      height: auto;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 30px 24px 48px;
+      padding: 38px 24px 12px;
       color: #fff;
       text-align: center;
       background: transparent;
       animation: reveal .55s ease-out both;
     }
-    .hero-kicker { margin: 0 0 14px; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #fff; text-shadow: 0 0 8px #fff, 0 0 22px #fff9; }
-    .hero h1 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 82px; font-weight: 400; line-height: 1.04; text-shadow: 0 0 10px #fff, 0 0 26px #fff9, 0 0 55px #fff5; }
-    .hero-subtitle { margin: 13px 0 0; color: #fff; font-size: 14px; text-shadow: 0 0 8px #fff, 0 0 20px #fff8; }
+
+    .hero-kicker {
+      display: none;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 82px;
+      font-weight: 400;
+      line-height: 1.04;
+      text-shadow: 0 0 10px #fff, 0 0 26px #fff9, 0 0 55px #fff5;
+    }
+
+    .hero-subtitle {
+      margin: 13px 0 0;
+      color: #fff;
+      font-size: 14px;
+      text-shadow: 0 0 8px #fff, 0 0 20px #fff8;
+    }
+
     .search-box {
       width: min(590px, 100%);
-      height: 54px;
+      height: 50px;
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-top: 28px;
+      margin-top: 20px;
       padding: 0 8px 0 18px;
       border: 1px solid #ffffffb0;
       border-radius: 7px;
@@ -198,13 +391,33 @@
       box-shadow: 0 0 16px #ffffff25, 0 8px 28px #000;
       color: #fff;
     }
-    .search-box:focus-within { box-shadow: 0 0 22px #ffffff40, 0 8px 28px #000; }
-    .search-box > svg { filter: drop-shadow(0 0 5px #fff); }
-    .search-box input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: #fff; font-size: 14px; text-shadow: 0 0 7px #fff6; }
-    .search-box input::placeholder { color: #aaa; }
+
+    .search-box:focus-within {
+      box-shadow: 0 0 22px #ffffff40, 0 8px 28px #000;
+    }
+
+    .search-box > svg {
+      filter: drop-shadow(0 0 5px #fff);
+    }
+
+    .search-box input {
+      min-width: 0;
+      flex: 1;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #fff;
+      font-size: 14px;
+      text-shadow: 0 0 7px #fff6;
+    }
+
+    .search-box input::placeholder {
+      color: #aaa;
+    }
+
     .search-box button {
-      width: 38px;
-      height: 38px;
+      width: 34px;
+      height: 34px;
       display: grid;
       place-items: center;
       border: 0;
@@ -215,58 +428,256 @@
       cursor: pointer;
       box-shadow: 0 0 12px #fff5;
     }
-    .search-box button:hover { background: #303030; box-shadow: 0 0 18px #fff9; }
-    .below-fold { width: min(960px, calc(100% - 44px)); margin: 0 auto; padding: 28px 0 42px; }
-    .section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; margin-bottom: 16px; }
-    .section-heading h2 { margin: 0; font-size: 14px; font-weight: 650; color: #fff; text-shadow: 0 0 8px #fff8; }
-    .section-heading span { color: #c8c8c8; font-size: 12px; text-shadow: 0 0 7px #fff6; }
-    .shortcuts { width: min(100%, 620px); display: grid; grid-template-columns: repeat(4, minmax(100px, 132px)); justify-content: center; gap: 12px; margin: 0 auto; }
+
+    .search-box button:hover {
+      background: #303030;
+      box-shadow: 0 0 18px #fff9;
+    }
+
+    .below-fold {
+      width: min(960px, calc(100% - 44px));
+      margin: 0 auto;
+      padding: 4px 0 42px;
+    }
+
+    .section-heading {
+      display: none;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 650;
+      color: #fff;
+      text-shadow: 0 0 8px #fff8;
+    }
+
+    .section-heading span {
+      color: #c8c8c8;
+      font-size: 12px;
+      text-shadow: 0 0 7px #fff6;
+    }
+
+    .shortcuts {
+      width: min(100%, 520px);
+      display: grid;
+      grid-template-columns: repeat(4, minmax(90px, 116px));
+      justify-content: center;
+      gap: 8px;
+      margin: 0 auto;
+    }
+
     .shortcut {
-      min-height: 95px;
+      min-height: 72px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 6px;
       border: 1px solid #353535;
       border-radius: 7px;
       background: color-mix(in srgb, var(--theme-surface) 85%, transparent);
       color: #fff;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 11px;
       text-shadow: 0 0 8px #fff7;
       transition: transform .16s, border-color .16s, box-shadow .16s;
     }
-    .shortcut:hover { transform: translateY(-2px); border-color: #fff; box-shadow: 0 0 17px #ffffff30; }
-    .shortcut-icon { width: 31px; height: 31px; display: grid; place-items: center; }
-    .shortcut-icon svg { width: 27px; height: 27px; fill: currentColor; filter: drop-shadow(0 0 5px #fff8); }
-    .shortcut-icon img { width: 23px; height: 23px; filter: brightness(0) invert(1) drop-shadow(0 0 5px #fff); }
-    .web-view { position: absolute; inset: 0; display: none; flex-direction: column; background: var(--theme-bg); }
-    .web-view.visible { display: flex; }
-    .frame-note { min-height: 34px; display: flex; justify-content: center; align-items: center; gap: 8px; padding: 5px 12px; background: #111; color: #ddd; font-size: 11px; }
-    .frame-note[hidden] { display: none; }
-    .frame-note a { color: #fff; font-weight: 650; text-decoration: none; text-shadow: 0 0 8px #fff; }
-    .frame-note a:hover { text-decoration: underline; }
-    iframe { width: 100%; flex: 1; border: 0; background: #050505; }
-    iframe[hidden] { display: none; }
-    .status { height: 24px; flex: 0 0 24px; padding: 4px 14px; border-top: 1px solid #242424; background: #090909; color: #bbb; font-size: 10px; }
-    @keyframes reveal { from { opacity: .55; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-    @media (max-width: 650px) {
-      .tab-strip { padding-right: 7px; padding-left: 8px; }
-      .tab { max-width: none; flex-basis: 110px; gap: 7px; padding-right: 6px; padding-left: 9px; }
-      .toolbar { gap: 3px; padding-right: 8px; padding-left: 7px; }
-      .nav-actions { gap: 0; }
-      .icon-button { width: 31px; height: 31px; flex-basis: 31px; }
-      .toolbar-actions .optional { display: none; }
-      .address-wrap { gap: 6px; padding: 0 9px; }
-      .bookmarks { padding: 0 8px; }
-      .hero { min-height: 310px; height: 39vh; }
-      .hero h1 { font-size: 50px; }
-      .below-fold { width: calc(100% - 28px); padding-top: 23px; }
-      .shortcuts { grid-template-columns: repeat(2, minmax(110px, 145px)); gap: 8px; }
-      .shortcut { min-height: 84px; }
+
+    .shortcut:hover {
+      transform: translateY(-2px);
+      border-color: #fff;
+      box-shadow: 0 0 17px #ffffff30;
     }
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+
+    .shortcut-icon {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+    }
+
+    .shortcut-icon svg {
+      width: 21px;
+      height: 21px;
+      fill: currentColor;
+      filter: drop-shadow(0 0 5px #fff8);
+    }
+
+    .shortcut-icon img {
+      width: 23px;
+      height: 23px;
+      filter: brightness(0) invert(1) drop-shadow(0 0 5px #fff);
+    }
+
+    .web-view {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      background: var(--theme-bg);
+    }
+
+    .web-view.visible {
+      display: flex;
+    }
+
+    .frame-note {
+      min-height: 34px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px;
+      background: #111;
+      color: #ddd;
+      font-size: 11px;
+    }
+
+    .frame-note[hidden] {
+      display: none;
+    }
+
+    .frame-note a {
+      color: #fff;
+      font-weight: 650;
+      text-decoration: none;
+      text-shadow: 0 0 8px #fff;
+    }
+
+    .frame-note a:hover {
+      text-decoration: underline;
+    }
+
+    iframe {
+      width: 100%;
+      flex: 1;
+      border: 0;
+      background: #050505;
+    }
+
+    iframe[hidden] {
+      display: none;
+    }
+
+    .status {
+      height: 24px;
+      flex: 0 0 24px;
+      padding: 4px 14px;
+      border-top: 1px solid #242424;
+      background: #090909;
+      color: #bbb;
+      font-size: 10px;
+    }
+
+    .github-button {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      color: #fff;
+      text-shadow: 0 0 9px #fff9;
+    }
+
+    .github-button svg {
+      width: 21px;
+      height: 21px;
+      fill: currentColor;
+      filter: drop-shadow(0 0 5px #fff8);
+    }
+
+    @keyframes reveal {
+      from {
+        opacity: .55;
+        transform: translateY(5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 650px) {
+      .tab-strip {
+        padding-right: 7px;
+        padding-left: 8px;
+      }
+
+      .tab {
+        max-width: none;
+        flex-basis: 110px;
+        gap: 7px;
+        padding-right: 6px;
+        padding-left: 9px;
+      }
+
+      .toolbar {
+        gap: 3px;
+        padding-right: 8px;
+        padding-left: 7px;
+      }
+
+      .nav-actions {
+        gap: 0;
+      }
+
+      .icon-button {
+        width: 31px;
+        height: 31px;
+        flex-basis: 31px;
+      }
+
+      .toolbar-actions .optional {
+        display: none;
+      }
+
+      .address-wrap {
+        gap: 6px;
+        padding: 0 9px;
+      }
+
+      .bookmarks {
+        padding: 0 8px;
+      }
+
+      .hero {
+        min-height: 0;
+        height: auto;
+        padding: 30px 16px 8px;
+      }
+
+      .hero h1 {
+        font-size: 50px;
+      }
+
+      .below-fold {
+        width: calc(100% - 28px);
+        padding-top: 4px;
+      }
+
+      .shortcuts {
+        grid-template-columns: repeat(2, minmax(100px, 132px));
+        gap: 8px;
+      }
+
+      .shortcut {
+        min-height: 68px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -302,7 +713,6 @@
       <section id="home-page" class="home-page" aria-label="New tab page">
         <canvas id="particles" aria-hidden="true"></canvas>
         <div class="hero">
-          <p class="hero-kicker">Web Proxy</p>
           <h1>Crystal v1</h1>
           <p class="hero-subtitle">Made by Joshua Boudreau.</p>
           <form id="search-form" class="search-box">
@@ -317,7 +727,7 @@
             <button class="shortcut" data-url="crystal://chat"><span class="shortcut-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" aria-hidden="true"><path d="M267.7 576.9C267.7 576.9 267.7 576.9 267.7 576.9L229.9 603.6C222.6 608.8 213 609.4 205 605.3C197 601.2 192 593 192 584L192 512L160 512C107 512 64 469 64 416L64 192C64 139 107 96 160 96L480 96C533 96 576 139 576 192L576 416C576 469 533 512 480 512L359.6 512L267.7 576.9zM332 472.8C340.1 467.1 349.8 464 359.7 464L480 464C506.5 464 528 442.5 528 416L528 192C528 165.5 506.5 144 480 144L160 144C133.5 144 112 165.5 112 192L112 416C112 442.5 133.5 464 160 464L216 464C226.4 464 235.3 470.6 238.6 479.9C239.5 482.4 240 485.1 240 488L240 537.7C272.7 514.6 303.3 493 331.9 472.8z"/></svg></span>Chat</button>
             <button class="shortcut" data-url="crystal://settings"><span class="shortcut-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" aria-hidden="true"><path d="M259.1 73.5C262.1 58.7 275.2 48 290.4 48L350.2 48C365.4 48 378.5 58.7 381.5 73.5L396 143.5C410.1 149.5 423.3 157.2 435.3 166.3L503.1 143.8C517.5 139 533.3 145 540.9 158.2L570.8 210C578.4 223.2 575.7 239.8 564.3 249.9L511 297.3C511.9 304.7 512.3 312.3 512.3 320C512.3 327.7 511.8 335.3 511 342.7L564.4 390.2C575.8 400.3 578.4 417 570.9 430.1L541 481.9C533.4 495 517.6 501.1 503.2 496.3L435.4 473.8C423.3 482.9 410.1 490.5 396.1 496.6L381.7 566.5C378.6 581.4 365.5 592 350.4 592L290.6 592C275.4 592 262.3 581.3 259.3 566.5L244.9 496.6C230.8 490.6 217.7 482.9 205.6 473.8L137.5 496.3C123.1 501.1 107.3 495.1 99.7 481.9L69.8 430.1C62.2 416.9 64.9 400.3 76.3 390.2L129.7 342.7C128.8 335.3 128.4 327.7 128.4 320C128.4 312.3 128.9 304.7 129.7 297.3L76.3 249.8C64.9 239.7 62.3 223 69.8 209.9L99.7 158.1C107.3 144.9 123.1 138.9 137.5 143.7L205.3 166.2C217.4 157.1 230.6 149.5 244.6 143.4L259.1 73.5zM320.3 400C364.5 399.8 400.2 363.9 400 319.7C399.8 275.5 363.9 239.8 319.7 240C275.5 240.2 239.8 276.1 240 320.3C240.2 364.5 276.1 400.2 320.3 400z"/></svg></span>Settings</button>
             <button class="shortcut" data-url="crystal://apps"><span class="shortcut-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" aria-hidden="true"><path d="M480 160L480 288L352 288L352 160L480 160zM480 352L480 480L352 480L352 352L480 352zM288 288L160 288L160 160L288 160L288 288zM160 352L288 352L288 480L160 480L160 352zM160 96C124.7 96 96 124.7 96 160L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 160C544 124.7 515.3 96 480 96L160 96z"/></svg></span>Apps</button>
-            <button class="shortcut" data-url="crystal://games"><span class="shortcut-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" aria-hidden="true"><path d="M448 128C554 128 640 214 640 320C640 426 554 512 448 512L192 512C86 512 0 426 0 320C0 214 86 128 192 128L448 128zM192 240C178.7 240 168 250.7 168 264L168 296L136 296C122.7 296 112 306.7 112 320C112 333.3 122.7 344 136 344L168 344L168 376C168 389.3 178.7 400 192 400C205.3 400 216 389.3 216 376L216 344L248 344C261.3 344 272 333.3 272 320C272 306.7 261.3 296 248 296L216 296L216 264C216 250.7 205.3 240 192 240zM432 336C414.3 336 400 350.3 400 368C400 385.7 414.3 400 432 400C449.7 400 464 385.7 464 368C464 350.3 449.7 336 432 336zM496 240C478.3 240 464 254.3 464 272C464 289.7 478.3 304 496 304C513.7 304 528 289.7 528 272C528 254.3 513.7 240 496 240z"/></svg></span>Games</button>
+            <button class="shortcut" data-url="crystal://games" id="games-button"><span class="shortcut-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" aria-hidden="true"><path d="M448 128C554 128 640 214 640 320C640 426 554 512 448 512L192 512C86 512 0 426 0 320C0 214 86 128 192 128L448 128zM192 240C178.7 240 168 250.7 168 264L168 296L136 296C122.7 296 112 306.7 112 320C112 333.3 122.7 344 136 344L168 344L168 376C168 389.3 178.7 400 192 400C205.3 400 216 389.3 216 376L216 344L248 344C261.3 344 272 333.3 272 320C272 306.7 261.3 296 248 296L216 296L216 264C216 250.7 205.3 240 192 240zM432 336C414.3 336 400 350.3 400 368C400 385.7 414.3 400 432 400C449.7 400 464 385.7 464 368C464 350.3 449.7 336 432 336zM496 240C478.3 240 464 254.3 464 272C464 289.7 478.3 304 496 304C513.7 304 528 289.7 528 272C528 254.3 513.7 240 496 240z"/></svg></span>Games</button>
           </div>
         </div>
       </section>
@@ -329,7 +739,12 @@
     </main>
     <footer class="status"><span id="status">Ready</span></footer>
   </div>
-    <script src="/internal-apps.js"></script>
+  <a href="https://github.com/jdbbbbbbb/Crystal-v1" target="_blank" rel="noopener noreferrer" class="github-button" aria-label="GitHub Repository">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+    </svg>
+  </a>
+  <script src="/internal-apps.js"></script>
   <script src="/proxy-config.js"></script>
   <script src="/scramjet/scramjet.js"></script>
   <script src="/controller/controller.api.js"></script>
@@ -634,17 +1049,21 @@
       navigate(address.value);
       address.blur();
     });
+
     document.querySelector('#search-form').addEventListener('submit', (event) => {
       event.preventDefault();
       navigate(document.querySelector('#search').value);
     });
+
     document.querySelector('#new-tab').addEventListener('click', createTab);
+
     document.querySelector('#home').addEventListener('click', () => {
       const tab = currentTab();
       tab.url = '';
       tab.title = 'New tab';
       render();
     });
+
     document.querySelector('#reload').addEventListener('click', () => {
       const url = currentTab().url;
       if (url.startsWith('crystal://')) {
@@ -654,6 +1073,7 @@
       else if (url) frame.src = url;
       else render();
     });
+
     document.querySelector('#back').addEventListener('click', () => {
       const tab = currentTab();
       if (tab.historyIndex > 0) {
@@ -663,6 +1083,7 @@
         render();
       }
     });
+
     document.querySelector('#forward').addEventListener('click', () => {
       const tab = currentTab();
       if (tab.historyIndex < tab.history.length - 1) {
@@ -672,9 +1093,17 @@
         render();
       }
     });
+
     document.querySelectorAll('[data-url]').forEach((button) => {
-      button.addEventListener('click', () => navigate(button.dataset.url));
+      button.addEventListener('click', () => {
+        if (button.id === 'games-button') {
+          status.textContent = 'Games will be displayed soon. Please wait while we fix some issues.';
+        } else {
+          navigate(button.dataset.url);
+        }
+      });
     });
+
     window.addEventListener('message', (event) => {
       if (event.source !== frame.contentWindow || event.origin !== location.origin) return;
       const message = event.data;
@@ -705,13 +1134,16 @@
         }
       }
     });
+
     document.querySelector('#bookmark-current').addEventListener('click', () => {
       if (currentTab().url) addBookmark(currentTab().url);
     });
+
     frame.addEventListener('load', () => {
       const url = currentTab()?.url;
       if (url) status.textContent = `Viewing ${url.startsWith('crystal://') ? `Crystal ${url.slice(10)}` : new URL(url).hostname}`;
     });
+
     proxyFrame.addEventListener('load', () => {
       const url = currentTab()?.url;
       if (url && shouldProxy(url)) status.textContent = `Viewing ${new URL(url).hostname} through Scramjet v2`;
