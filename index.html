@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050505">
+  <title>Crystal v1 | Browser</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: "Segoe UI Variable", "Aptos", sans-serif;
+      color: #f5f5f5;
+      background: #050505;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      --line: #282828;
+      --muted: #a0a0a0;
+      --theme-bg: #050505;
+      --theme-surface: #090909;
+      --theme-panel: #171717;
+      --theme-line: #303030;
+      --home-background: none;
+    }
+
+    :root[data-theme="ocean"] { --theme-bg: #06131b; --theme-surface: #091c26; --theme-panel: #102731; --theme-line: #29444f; }
+    :root[data-theme="forest"] { --theme-bg: #07140e; --theme-surface: #0c1b13; --theme-panel: #13251a; --theme-line: #304638; }
+    :root[data-theme="plum"] { --theme-bg: #140d16; --theme-surface: #1b1220; --theme-panel: #271a2d; --theme-line: #48364e; }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 360px; min-height: 100vh; background: var(--theme-bg); text-shadow: 0 0 7px #fff5; }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    .browser { min-height: 100vh; display: flex; flex-direction: column; }
+    .tab-strip {
+      height: 48px;
+      flex: 0 0 48px;
+      display: flex;
+      align-items: end;
+      gap: 7px;
+      padding: 7px 12px 0;
+      background: var(--theme-bg);
+    }
+    .brand-mark {
+      width: 25px;
+      height: 25px;
+      margin: 0 6px 6px 1px;
+      flex: 0 0 25px;
+      display: grid;
+      place-items: center;
+    }
+    .tab-list { min-width: 0; flex: 1; display: flex; align-items: end; gap: 5px; }
+    .tab {
+      min-width: 90px;
+      max-width: 235px;
+      height: 34px;
+      flex: 1 1 185px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 10px 0 13px;
+      border: 0;
+      border-radius: 9px 9px 0 0;
+      background: transparent;
+      color: #b7b7b7;
+      cursor: pointer;
+      text-align: left;
+    }
+    .tab.active { background: var(--theme-panel); color: #fff; text-shadow: 0 0 9px #fff8; }
+    .tab-title { min-width: 0; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 12px; }
+    .tab-favicon { width: 12px; height: 12px; flex: 0 0 12px; border: 1px solid #fff; border-radius: 50%; background: radial-gradient(circle, #fff 0 25%, #111 32%); box-shadow: 0 0 7px #fff8; }
+    .tab-close, .icon-button {
+      border: 0;
+      background: transparent;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: #eee;
+    }
+    .tab-close { width: 20px; height: 20px; border-radius: 50%; font-size: 15px; line-height: 1; }
+    .tab-close:hover, .icon-button:hover { background: #292929; }
+    .new-tab {
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
+      margin-bottom: 2px;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      font-size: 21px;
+      cursor: pointer;
+      color: #fff;
+      text-shadow: 0 0 9px #fff9;
+    }
+    .toolbar {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 13px;
+      background: var(--theme-surface);
+    }
+    .nav-actions { display: flex; align-items: center; gap: 3px; }
+    .icon-button { width: 34px; height: 34px; flex: 0 0 34px; border-radius: 50%; }
+    .icon-button:disabled { opacity: .38; cursor: default; }
+    .address-wrap {
+      min-width: 80px;
+      height: 36px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 12px;
+      border: 1px solid #292929;
+      border-radius: 20px;
+      background: var(--theme-panel);
+      transition: border-color .16s, background .16s, box-shadow .16s;
+    }
+    .address-wrap:focus-within { background: #101010; border-color: #fff; box-shadow: 0 0 0 2px #ffffff20, 0 0 13px #ffffff26; }
+    .address-wrap svg { flex: 0 0 16px; color: #fff; filter: drop-shadow(0 0 4px #fff8); }
+    #address { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: #fff; font-size: 13px; text-shadow: 0 0 7px #fff6; }
+    #address::placeholder { color: #aaa; }
+    .toolbar-actions { display: flex; align-items: center; gap: 4px; }
+    .profile {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      margin-left: 4px;
+      border: 0;
+      border-radius: 50%;
+      background: #171717;
+      border: 1px solid #555;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      text-shadow: 0 0 8px #fff;
+    }
+    .bookmarks {
+      height: 38px;
+      flex: 0 0 38px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 16px;
+      border-top: 1px solid #242424;
+      background: var(--theme-surface);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .bookmarks:empty { display: none; }
+    .bookmark {
+      height: 28px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 9px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      font-size: 12px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .bookmark { color: #f5f5f5; text-shadow: 0 0 7px #fff5; }
+    .bookmark:hover { background: #202020; }
+    .bookmark-dot { width: 9px; height: 9px; border-radius: 50%; background: #fff; box-shadow: 0 0 8px #fff; }
+    main { min-height: 0; flex: 1; position: relative; background: var(--theme-bg); }
+    .home-page { position: relative; min-height: calc(100vh - 134px); overflow: auto; background-color: var(--theme-bg); background-image: linear-gradient(#0004, #0009), var(--home-background); background-position: center; background-size: cover; background-repeat: no-repeat; color: #fff; }
+    #particles { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .hero, .below-fold { position: relative; z-index: 1; }
+    .hero {
+      min-height: 340px;
+      height: min(45vh, 430px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 30px 24px 48px;
+      color: #fff;
+      text-align: center;
+      background: transparent;
+      animation: reveal .55s ease-out both;
+    }
+    .hero-kicker { margin: 0 0 14px; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #fff; text-shadow: 0 0 8px #fff, 0 0 22px #fff9; }
+    .hero h1 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 82px; font-weight: 400; line-height: 1.04; text-shadow: 0 0 10px #fff, 0 0 26px #fff9, 0 0 55px #fff5; }
+    .hero-subtitle { margin: 13px 0 0; color: #fff; font-size: 14px; text-shadow: 0 0 8px #fff, 0 0 20px #fff8; }
+    .search-box {
+      width: min(590px, 100%);
+      height: 54px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 28px;
+      padding: 0 8px 0 18px;
+      border: 1px solid #ffffffb0;
+      border-radius: 7px;
+      background: #090909eF;
+      box-shadow: 0 0 16px #ffffff25, 0 8px 28px #000;
+      color: #fff;
+    }
+    .search-box:focus-within { box-shadow: 0 0 22px #ffffff40, 0 8px 28px #000; }
+    .search-box > svg { filter: drop-shadow(0 0 5px #fff); }
+    .search-box input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: #fff; font-size: 14px; text-shadow: 0 0 7px #fff6; }
+    .search-box input::placeholder { color: #aaa; }
+    .search-box button {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 5px;
+      border: 1px solid #fff;
+      background: #111;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 0 12px #fff5;
+    }
+    .search-box button:hover { background: #303030; box-shadow: 0 0 18px #fff9; }
+    .below-fold { width: min(960px, calc(100% - 44px)); margin: 0 auto; padding: 28px 0 42px; }
+    .section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; margin-bottom: 16px; }
+    .section-heading h2 { margin: 0; font-size: 14px; font-weight: 650; color: #fff; text-shadow: 0 0 8px #fff8; }
+    .section-heading span { color: #c8c8c8; font-size: 12px; text-shadow: 0 0 7px #fff6; }
+    .shortcuts { width: min(100%, 620px); display: grid; grid-template-columns: repeat(4, minmax(100px, 132px)); justify-content: center; gap: 12px; margin: 0 auto; }
+    .shortcut {
+      min-height: 95px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 1px solid #353535;
+      border-radius: 7px;
+      background: color-mix(in srgb, var(--theme-surface) 85%, transparent);
+      color: #fff;
+      cursor: pointer;
+      font-size: 12px;
+      text-shadow: 0 0 8px #fff7;
+      transition: transform .16s, border-color .16s, box-shadow .16s;
+    }
+    .shortcut:hover { transform: translateY(-2px); border-color: #fff; box-shadow: 0 0 17px #ffffff30; }
+    .shortcut-icon { width: 31px; height: 31px; display: grid; place-items: center; }
+    .shortcut-icon svg { width: 27px; height: 27px; fill: currentColor; filter: drop-shadow(0 0 5px #fff8); }
+    .shortcut-icon img { width: 23px; height: 23px; filter: brightness(0) invert(1) drop-shadow(0 0 5px #fff); }
+    .web-view { position: absolute; inset: 0; display: none; flex-direction: column; background: var(--theme-bg); }
+    .web-view.visible { display: flex; }
+    .frame-note { min-height: 34px; display: flex; justify-content: center; align-items: center; gap: 8px; padding: 5px 12px; background: #111; color: #ddd; font-size: 11px; }
+    .frame-note[hidden] { display: none; }
+    .frame-note a { color: #fff; font-weight: 650; text-decoration: none; text-shadow: 0 0 8px #fff; }
+    .frame-note a:hover { text-decoration: underline; }
+    iframe { width: 100%; flex: 1; border: 0; background: #050505; }
+    iframe[hidden] { display: none; }
+    .status { height: 24px; flex: 0 0 24px; padding: 4px 14px; border-top: 1px solid #242424; background: #090909; color: #bbb; font-size: 10px; }
+    @keyframes reveal { from { opacity: .55; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 650px) {
+      .tab-strip { padding-right: 7px; padding-left: 8px; }
+      .tab { max-width: none; flex-basis: 110px; gap: 7px; padding-right: 6px; padding-left: 9px; }
+      .toolbar { gap: 3px; padding-right: 8px; padding-left: 7px; }
+      .nav-actions { gap: 0; }
+      .icon-button { width: 31px; height: 31px; flex-basis: 31px; }
+      .toolbar-actions .optional { display: none; }
+      .address-wrap { gap: 6px; padding: 0 9px; }
+      .bookmarks { padding: 0 8px; }
+      .hero { min-height: 310px; height: 39vh; }
+      .hero h1 { font-size: 50px; }
+      .below-fold { width: calc(100% - 28px); padding-top: 23px; }
+      .shortcuts { grid-template-columns: repeat(2, minmax(110px, 145px)); gap: 8px; }
+      .shortcut { min-height: 84px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="browser">
+    <header>
+      <div class="tab-strip">
+        <div class="brand-mark" aria-label="Crystal Browser">
+          <svg width="25" height="25" viewBox="0 0 25 25" fill="none" aria-hidden="true"><path d="M12.5 1.8 23 7.1v10.8l-10.5 5.3L2 17.9V7.1L12.5 1.8Z" fill="#fff"/><path d="m12.5 5.8 6.6 3.3v6.8l-6.6 3.3-6.6-3.3V9.1l6.6-3.3Z" fill="#090909"/><path d="m12.5 5.8 6.6 3.3-6.6 3.4-6.6-3.4 6.6-3.3Z" fill="#fff"/></svg>
+        </div>
+        <div id="tab-list" class="tab-list" role="tablist" aria-label="Browser tabs"></div>
+        <button id="new-tab" class="new-tab" title="New tab" aria-label="New tab">+</button>
+      </div>
+      <div class="toolbar">
+        <div class="nav-actions">
+          <button id="back" class="icon-button" title="Back" aria-label="Back" disabled><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m14.5 5-7 7 7 7"/></svg></button>
+          <button id="forward" class="icon-button" title="Forward" aria-label="Forward" disabled><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m9.5 5 7 7-7 7"/></svg></button>
+          <button id="reload" class="icon-button" title="Reload" aria-label="Reload"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 11a8 8 0 0 0-14.9-3L3 11m0-5v5h5M4 13a8 8 0 0 0 14.9 3L21 13m0 5v-5h-5"/></svg></button>
+        </div>
+        <form id="address-form" class="address-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          <input id="address" type="text" autocomplete="off" spellcheck="false" placeholder="Search or enter an address" aria-label="Search or enter an address">
+        </form>
+        <div class="toolbar-actions">
+          <button id="bookmark-current" class="icon-button optional" title="Bookmark this page" aria-label="Bookmark this page"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 4.8A1.8 1.8 0 0 1 7.8 3h8.4A1.8 1.8 0 0 1 18 4.8V21l-6-4-6 4V4.8Z"/></svg></button>
+          <button id="home" class="icon-button" title="Home" aria-label="Home"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m3.5 10 8.5-7 8.5 7v10a1 1 0 0 1-1 1h-5v-7h-5v7h-5a1 1 0 0 1-1-1V10Z"/></svg></button>
+          <button class="profile" title="Crystal profile" aria-label="Crystal profile">C</button>
+        </div>
+      </div>
+      <nav class="bookmarks" aria-label="Bookmarks">
+      </nav>
+    </header>
+    <main>
+      <section id="home-page" class="home-page" aria-label="New tab page">
+        <canvas id="particles" aria-hidden="true"></canvas>
+        <div class="hero">
+          <p class="hero-kicker">Web Proxy</p>
+          <h1>Crystal v1</h1>
+          <p class="hero-subtitle">Made by Joshua Boudreau.</p>
+          <form id="search-form" class="search-box">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg>
+            <input id="search" type="text" autocomplete="off" placeholder="Search the web or enter a URL" aria-label="Search the web or enter a URL">
+            <button type="submit" title="Search" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg></button>
+          </form>
+        </div>
+        <div class="below-fold">
+          <div class="section-heading"><h2>Your places</h2><span>Quick access</span></div>
+          <div class="shortcuts">
+            <button class="shortcut" data-url="crystal://chat"><span class="shortcut-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" aria-hidden="true"><path d="M267.7 576.9C267.7 576.9 267.7 576.9 267.7 576.9L229.9 603.6C222.6 608.8 213 609.4 205 605.3C197 601.2 192 593 192 584L192 512L160 512C107 512 64 469 64 416L64 192C64 139 107 96 160 96L480 96C533 96 576 139 576 192L576 416C576 469 533 512 480 512L359.6 512L267.7 576.9zM332 472.8C340.1 467.1 349.8 464 359.7 464L480 464C506.5 464 528 442.5 528 416L528 192C528 165.5 506.5 144 480 144L160 144C133.5 144 112 165.5 112 192L112 416C112 442.5 133.5 464 160 464L216 464C226.4 464 235.3 470.6 238.6 479.9C239.5 482.4 240 485.1 240 488L240 537.7C272.7 514.6 303.3 493 331.9 472.8z"/></svg></span>Chat</button>
+            <button class="shortcut" data-url="crystal://settings"><span class="shortcut-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" aria-hidden="true"><path d="M259.1 73.5C262.1 58.7 275.2 48 290.4 48L350.2 48C365.4 48 378.5 58.7 381.5 73.5L396 143.5C410.1 149.5 423.3 157.2 435.3 166.3L503.1 143.8C517.5 139 533.3 145 540.9 158.2L570.8 210C578.4 223.2 575.7 239.8 564.3 249.9L511 297.3C511.9 304.7 512.3 312.3 512.3 320C512.3 327.7 511.8 335.3 511 342.7L564.4 390.2C575.8 400.3 578.4 417 570.9 430.1L541 481.9C533.4 495 517.6 501.1 503.2 496.3L435.4 473.8C423.3 482.9 410.1 490.5 396.1 496.6L381.7 566.5C378.6 581.4 365.5 592 350.4 592L290.6 592C275.4 592 262.3 581.3 259.3 566.5L244.9 496.6C230.8 490.6 217.7 482.9 205.6 473.8L137.5 496.3C123.1 501.1 107.3 495.1 99.7 481.9L69.8 430.1C62.2 416.9 64.9 400.3 76.3 390.2L129.7 342.7C128.8 335.3 128.4 327.7 128.4 320C128.4 312.3 128.9 304.7 129.7 297.3L76.3 249.8C64.9 239.7 62.3 223 69.8 209.9L99.7 158.1C107.3 144.9 123.1 138.9 137.5 143.7L205.3 166.2C217.4 157.1 230.6 149.5 244.6 143.4L259.1 73.5zM320.3 400C364.5 399.8 400.2 363.9 400 319.7C399.8 275.5 363.9 239.8 319.7 240C275.5 240.2 239.8 276.1 240 320.3C240.2 364.5 276.1 400.2 320.3 400z"/></svg></span>Settings</button>
+            <button class="shortcut" data-url="crystal://apps"><span class="shortcut-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" aria-hidden="true"><path d="M480 160L480 288L352 288L352 160L480 160zM480 352L480 480L352 480L352 352L480 352zM288 288L160 288L160 160L288 160L288 288zM160 352L288 352L288 480L160 480L160 352zM160 96C124.7 96 96 124.7 96 160L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 160C544 124.7 515.3 96 480 96L160 96z"/></svg></span>Apps</button>
+            <button class="shortcut" data-url="crystal://games"><span class="shortcut-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" aria-hidden="true"><path d="M448 128C554 128 640 214 640 320C640 426 554 512 448 512L192 512C86 512 0 426 0 320C0 214 86 128 192 128L448 128zM192 240C178.7 240 168 250.7 168 264L168 296L136 296C122.7 296 112 306.7 112 320C112 333.3 122.7 344 136 344L168 344L168 376C168 389.3 178.7 400 192 400C205.3 400 216 389.3 216 376L216 344L248 344C261.3 344 272 333.3 272 320C272 306.7 261.3 296 248 296L216 296L216 264C216 250.7 205.3 240 192 240zM432 336C414.3 336 400 350.3 400 368C400 385.7 414.3 400 432 400C449.7 400 464 385.7 464 368C464 350.3 449.7 336 432 336zM496 240C478.3 240 464 254.3 464 272C464 289.7 478.3 304 496 304C513.7 304 528 289.7 528 272C528 254.3 513.7 240 496 240z"/></svg></span>Games</button>
+          </div>
+        </div>
+      </section>
+      <section id="web-view" class="web-view" aria-label="Web page">
+        <div class="frame-note"><span>Scramjet v2 is enabled for supported sites.</span><a id="open-external" href="#" target="_blank" rel="noopener noreferrer">Open this page externally</a></div>
+        <iframe id="web-frame" title="Web page" referrerpolicy="strict-origin-when-cross-origin" allow="fullscreen; clipboard-read; clipboard-write"></iframe>
+        <iframe id="proxy-frame" title="Scramjet v2 web page" hidden></iframe>
+      </section>
+    </main>
+    <footer class="status"><span id="status">Ready</span></footer>
+  </div>
+    <script src="/internal-apps.js"></script>
+  <script src="/proxy-config.js"></script>
+  <script src="/scramjet/scramjet.js"></script>
+  <script src="/controller/controller.api.js"></script>
+  <script src="/libcurl/index.js"></script>
+  <script>
+    const tabs = [];
+    let activeTabId = null;
+    let nextTabId = 1;
+    const tabList = document.querySelector('#tab-list');
+    const address = document.querySelector('#address');
+    const frame = document.querySelector('#web-frame');
+    const proxyFrame = document.querySelector('#proxy-frame');
+    const homePage = document.querySelector('#home-page');
+    const webView = document.querySelector('#web-view');
+    const status = document.querySelector('#status');
+    const particleCanvas = document.querySelector('#particles');
+    const particleContext = particleCanvas.getContext('2d');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let reducedMotion = prefersReducedMotion || localStorage.getItem('crystal-reduced-motion') === '1';
+    let particles = [];
+    let particleFrame = 0;
+    let frameDocumentKey = '';
+    let scramjetFrame = null;
+    let scramjetReady = null;
+    const allowedThemes = new Set(['obsidian', 'ocean', 'forest', 'plum']);
+    const proxyHosts = new Set(window.CRYSTAL_PROXY_HOSTS || []);
+
+    function shouldProxy(url) {
+      try {
+        const parsed = new URL(url);
+        return parsed.protocol === 'https:'
+          && (!parsed.port || parsed.port === '443')
+          && [...proxyHosts].some((host) => parsed.hostname === host || parsed.hostname.endsWith(`.${host}`));
+      } catch {
+        return false;
+      }
+    }
+
+    async function initializeScramjet() {
+      if (scramjetFrame) return scramjetFrame;
+      if (scramjetReady) return scramjetReady;
+      scramjetReady = (async () => {
+        if (!('serviceWorker' in navigator) || !window.$scramjetController?.Controller || !window.LibcurlTransport?.LibcurlClient) {
+          throw new Error('Scramjet v2 is unavailable in this browser context.');
+        }
+        const registration = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+        await navigator.serviceWorker.ready;
+        if (!navigator.serviceWorker.controller) {
+          await new Promise((resolve) => {
+            const timeout = setTimeout(resolve, 8000);
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+              clearTimeout(timeout);
+              resolve();
+            }, { once: true });
+          });
+        }
+        const serviceWorker = navigator.serviceWorker.controller || registration.active;
+        if (!serviceWorker) throw new Error('Scramjet service worker did not activate.');
+        const { Controller, config } = window.$scramjetController;
+        config.scramjetPath = '/scramjet/scramjet.js';
+        config.injectPath = '/controller/controller.inject.js';
+        config.wasmPath = '/scramjet/scramjet.wasm';
+        const websocket = `${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}/wisp/`;
+        const transport = new window.LibcurlTransport.LibcurlClient({ websocket });
+        const controller = new Controller({ serviceworker: serviceWorker, transport });
+        await controller.wait();
+        scramjetFrame = controller.createFrame(proxyFrame);
+        return scramjetFrame;
+      })();
+      return scramjetReady;
+    }
+
+    async function loadScramjetUrl(url) {
+      try {
+        const controlledFrame = await initializeScramjet();
+        if (currentTab()?.url !== url) return;
+        await controlledFrame.go(url);
+        status.textContent = `Viewing ${new URL(url).hostname} through Scramjet v2`;
+      } catch (error) {
+        if (currentTab()?.url !== url) return;
+        status.textContent = `Scramjet could not start: ${error.message}`;
+        proxyFrame.hidden = true;
+        frame.hidden = false;
+        frame.src = url;
+      }
+    }
+
+    function applyAppearance(theme, background) {
+      document.documentElement.dataset.theme = allowedThemes.has(theme) ? theme : 'obsidian';
+      const safeBackground = typeof background === 'string'
+        && background.length <= 2_900_000
+        && /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(background)
+        ? background
+        : '';
+      document.documentElement.style.setProperty('--home-background', safeBackground ? `url("${safeBackground}")` : 'none');
+    }
+
+    applyAppearance(localStorage.getItem('crystal-theme') || 'obsidian', localStorage.getItem('crystal-background') || '');
+
+    function resizeParticles() {
+      const bounds = particleCanvas.getBoundingClientRect();
+      const scale = Math.min(window.devicePixelRatio || 1, 2);
+      particleCanvas.width = Math.round(bounds.width * scale);
+      particleCanvas.height = Math.round(bounds.height * scale);
+      particleContext.setTransform(scale, 0, 0, scale, 0, 0);
+      const count = Math.max(24, Math.min(76, Math.round(bounds.width * bounds.height / 17000)));
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * bounds.width,
+        y: Math.random() * bounds.height,
+        radius: 0.6 + Math.random() * 1.25,
+        opacity: 0.3 + Math.random() * 0.55,
+        speedX: (Math.random() - 0.5) * 0.24,
+        speedY: (Math.random() - 0.5) * 0.18
+      }));
+    }
+
+    function drawParticles() {
+      particleFrame = 0;
+      const width = particleCanvas.clientWidth;
+      const height = particleCanvas.clientHeight;
+      if (!width || !height) return;
+      particleContext.clearRect(0, 0, width, height);
+      for (const particle of particles) {
+        if (!reducedMotion) {
+          particle.x = (particle.x + particle.speedX + width) % width;
+          particle.y = (particle.y + particle.speedY + height) % height;
+        }
+        particleContext.beginPath();
+        particleContext.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        particleContext.fillStyle = `rgba(255, 255, 255, ${particle.opacity})`;
+        particleContext.shadowColor = '#fff';
+        particleContext.shadowBlur = particle.radius * 8;
+        particleContext.fill();
+      }
+      particleContext.shadowBlur = 0;
+      if (!reducedMotion && !document.hidden && !homePage.hidden) {
+        particleFrame = requestAnimationFrame(drawParticles);
+      }
+    }
+
+    function startParticles() {
+      if (reducedMotion) {
+        drawParticles();
+      } else if (!document.hidden && !homePage.hidden && !particleFrame) {
+        particleFrame = requestAnimationFrame(drawParticles);
+      }
+    }
+
+    function stopParticles() {
+      if (particleFrame) cancelAnimationFrame(particleFrame);
+      particleFrame = 0;
+    }
+
+    resizeParticles();
+    window.addEventListener('resize', () => {
+      resizeParticles();
+      if (reducedMotion) drawParticles();
+      else startParticles();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopParticles();
+      else startParticles();
+    });
+
+    function currentTab() {
+      return tabs.find((tab) => tab.id === activeTabId);
+    }
+
+    function createTab() {
+      const tab = { id: nextTabId++, title: 'New tab', url: '', history: [], historyIndex: -1 };
+      tabs.push(tab);
+      activeTabId = tab.id;
+      render();
+      address.focus();
+    }
+
+    function closeTab(id) {
+      const index = tabs.findIndex((tab) => tab.id === id);
+      if (index < 0) return;
+      tabs.splice(index, 1);
+      if (activeTabId === id) activeTabId = tabs[Math.max(0, index - 1)]?.id ?? null;
+      if (!tabs.length) createTab();
+      else render();
+    }
+
+    function renderTabs() {
+      tabList.replaceChildren();
+      for (const tab of tabs) {
+        const element = document.createElement('button');
+        element.className = `tab${tab.id === activeTabId ? ' active' : ''}`;
+        element.setAttribute('role', 'tab');
+        element.setAttribute('aria-selected', String(tab.id === activeTabId));
+        element.innerHTML = '<span class="tab-favicon" aria-hidden="true"></span>';
+        const title = document.createElement('span');
+        title.className = 'tab-title';
+        title.textContent = tab.title;
+        const close = document.createElement('span');
+        close.className = 'tab-close';
+        close.textContent = '\u00d7';
+        close.title = 'Close tab';
+        close.setAttribute('role', 'button');
+        close.setAttribute('aria-label', `Close ${tab.title}`);
+        close.addEventListener('click', (event) => { event.stopPropagation(); closeTab(tab.id); });
+        element.append(title, close);
+        element.addEventListener('click', () => { activeTabId = tab.id; render(); });
+        tabList.append(element);
+      }
+    }
+
+    function render() {
+      const tab = currentTab();
+      if (!tab) return;
+      renderTabs();
+      const isHome = !tab.url;
+      const isInternal = tab.url.startsWith('crystal://');
+      homePage.hidden = !isHome;
+      if (isHome) startParticles();
+      else stopParticles();
+      webView.classList.toggle('visible', !isHome);
+      document.querySelector('.frame-note').hidden = isInternal;
+      address.value = tab.url;
+      document.querySelector('#back').disabled = tab.historyIndex <= 0;
+      document.querySelector('#forward').disabled = tab.historyIndex < 0 || tab.historyIndex >= tab.history.length - 1;
+      status.textContent = isHome ? 'Ready' : `Viewing ${isInternal ? `Crystal ${tab.url.slice(10)}` : new URL(tab.url).hostname}`;
+      if (isHome) {
+        frame.removeAttribute('src');
+        frame.removeAttribute('srcdoc');
+        frame.hidden = false;
+        proxyFrame.hidden = true;
+        frameDocumentKey = '';
+      } else if (frameDocumentKey !== tab.url) {
+        frameDocumentKey = tab.url;
+        if (isInternal) {
+          frame.removeAttribute('src');
+          frame.srcdoc = window.renderCrystalPage(tab.url);
+          frame.hidden = false;
+          proxyFrame.hidden = true;
+        } else if (shouldProxy(tab.url)) {
+          frame.removeAttribute('src');
+          frame.removeAttribute('srcdoc');
+          frame.hidden = true;
+          proxyFrame.hidden = false;
+          status.textContent = `Connecting to ${new URL(tab.url).hostname} through Scramjet v2...`;
+          loadScramjetUrl(tab.url);
+        } else {
+          frame.removeAttribute('srcdoc');
+          frame.hidden = false;
+          proxyFrame.hidden = true;
+          frame.src = tab.url;
+        }
+      }
+      document.querySelector('#open-external').href = isInternal ? '#' : (tab.url || '#');
+    }
+
+    function resolveAddress(input) {
+      const value = input.trim();
+      if (!value) return '';
+      if (/^crystal:\/\/[a-z0-9/-]+$/i.test(value)) return value.toLowerCase();
+      if (/^https?:\/\//i.test(value)) return value;
+      if (/^(localhost|\d{1,3}(\.\d{1,3}){3})(:\d+)?([/?#]|$)/i.test(value) || /^[^\s.]+\.[^\s]+/.test(value)) {
+        return `https://${value}`;
+      }
+      return `https://www.google.com/search?q=${encodeURIComponent(value)}`;
+    }
+
+    function navigate(input, addHistory = true) {
+      const url = resolveAddress(input);
+      if (!url) return;
+      const tab = currentTab();
+      tab.url = url;
+      tab.title = url.startsWith('crystal://')
+        ? url.slice(10).split('/')[0].replace(/^./, (character) => character.toUpperCase())
+        : new URL(url).hostname.replace(/^www\./, '');
+      if (addHistory) {
+        tab.history = tab.history.slice(0, tab.historyIndex + 1);
+        tab.history.push(url);
+        tab.historyIndex = tab.history.length - 1;
+      }
+      render();
+    }
+
+    function addBookmark(url) {
+      const bookmarks = document.querySelector('.bookmarks');
+      const existing = [...bookmarks.querySelectorAll('.bookmark')].some((bookmark) => bookmark.dataset.url === url);
+      if (existing) {
+        status.textContent = 'Already bookmarked';
+        return;
+      }
+      const bookmark = document.createElement('button');
+      bookmark.className = 'bookmark';
+      bookmark.dataset.url = url;
+      const dot = document.createElement('span');
+      dot.className = 'bookmark-dot';
+      bookmark.append(dot, document.createTextNode(new URL(url).hostname.replace(/^www\./, '')));
+      bookmark.addEventListener('click', () => navigate(url));
+      bookmarks.append(bookmark);
+      status.textContent = 'Bookmark added';
+    }
+
+    document.querySelector('#address-form').addEventListener('submit', (event) => {
+      event.preventDefault();
+      navigate(address.value);
+      address.blur();
+    });
+    document.querySelector('#search-form').addEventListener('submit', (event) => {
+      event.preventDefault();
+      navigate(document.querySelector('#search').value);
+    });
+    document.querySelector('#new-tab').addEventListener('click', createTab);
+    document.querySelector('#home').addEventListener('click', () => {
+      const tab = currentTab();
+      tab.url = '';
+      tab.title = 'New tab';
+      render();
+    });
+    document.querySelector('#reload').addEventListener('click', () => {
+      const url = currentTab().url;
+      if (url.startsWith('crystal://')) {
+        frameDocumentKey = '';
+        render();
+      } else if (url && shouldProxy(url)) loadScramjetUrl(url);
+      else if (url) frame.src = url;
+      else render();
+    });
+    document.querySelector('#back').addEventListener('click', () => {
+      const tab = currentTab();
+      if (tab.historyIndex > 0) {
+        tab.historyIndex--;
+        tab.url = tab.history[tab.historyIndex];
+        tab.title = tab.url.startsWith('crystal://') ? tab.url.slice(10).split('/')[0] : new URL(tab.url).hostname.replace(/^www\./, '');
+        render();
+      }
+    });
+    document.querySelector('#forward').addEventListener('click', () => {
+      const tab = currentTab();
+      if (tab.historyIndex < tab.history.length - 1) {
+        tab.historyIndex++;
+        tab.url = tab.history[tab.historyIndex];
+        tab.title = tab.url.startsWith('crystal://') ? tab.url.slice(10).split('/')[0] : new URL(tab.url).hostname.replace(/^www\./, '');
+        render();
+      }
+    });
+    document.querySelectorAll('[data-url]').forEach((button) => {
+      button.addEventListener('click', () => navigate(button.dataset.url));
+    });
+    window.addEventListener('message', (event) => {
+      if (event.source !== frame.contentWindow || event.origin !== location.origin) return;
+      const message = event.data;
+      if (message?.type === 'crystal:navigate' && typeof message.url === 'string' && (/^https:\/\//i.test(message.url) || /^crystal:\/\/(chat|settings|apps|games|game\/\d+)$/i.test(message.url))) {
+        navigate(message.url);
+      } else if (message?.type === 'crystal:open-game' && Number.isInteger(message.id) && message.id >= 0) {
+        const tabId = activeTabId;
+        fetch(`/api/games/${message.id}`).then(async (response) => {
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || 'Game not found.');
+          if (currentTab()?.id === tabId && typeof data.game?.url === 'string' && /^https:\/\//i.test(data.game.url)) {
+            navigate(data.game.url);
+          }
+        }).catch((error) => { status.textContent = error.message; });
+      } else if (message?.type === 'crystal:motion') {
+        reducedMotion = prefersReducedMotion || localStorage.getItem('crystal-reduced-motion') === '1';
+        stopParticles();
+        if (reducedMotion) drawParticles();
+        else startParticles();
+      } else if (message?.type === 'crystal:appearance' && allowedThemes.has(message.theme)) {
+        const background = typeof message.background === 'string' ? message.background : '';
+        applyAppearance(message.theme, background);
+        localStorage.setItem('crystal-theme', message.theme);
+        if (background && background.length <= 2_900_000 && /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(background)) {
+          localStorage.setItem('crystal-background', background);
+        } else {
+          localStorage.removeItem('crystal-background');
+        }
+      }
+    });
+    document.querySelector('#bookmark-current').addEventListener('click', () => {
+      if (currentTab().url) addBookmark(currentTab().url);
+    });
+    frame.addEventListener('load', () => {
+      const url = currentTab()?.url;
+      if (url) status.textContent = `Viewing ${url.startsWith('crystal://') ? `Crystal ${url.slice(10)}` : new URL(url).hostname}`;
+    });
+    proxyFrame.addEventListener('load', () => {
+      const url = currentTab()?.url;
+      if (url && shouldProxy(url)) status.textContent = `Viewing ${new URL(url).hostname} through Scramjet v2`;
+    });
+
+    createTab();
+  </script>
+</body>
+</html>
